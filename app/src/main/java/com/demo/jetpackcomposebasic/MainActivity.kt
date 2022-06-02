@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            FigureAndColumnsComposable()
+            ConstraintsComposable()
         }
     }
 }
@@ -38,39 +38,14 @@ fun Figure(color: Color) {
 }
 
 @Composable
-fun FigureAndColumnsComposable() {
-    Row(
-        modifier = Modifier.fillMaxSize(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier.fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Figure(color = Color.Red)
-            Figure(color = Color.Green)
-            Figure(color = Color.Blue)
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Figure(color = Color.Red)
-            Figure(color = Color.Green)
-            Figure(color = Color.Blue)
-        }
-    }
+fun ConstraintsComposable() {
+
 }
 
 @Preview(showBackground = true, showSystemUi = true, device = Devices.DEFAULT)
 @Composable
 fun DefaultPreview() {
     JetpackComposeBasicTheme {
-        FigureAndColumnsComposable()
+        ConstraintsComposable()
     }
 }
