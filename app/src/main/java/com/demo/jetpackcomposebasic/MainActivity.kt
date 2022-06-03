@@ -3,17 +3,23 @@ package com.demo.jetpackcomposebasic
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animate
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.defaultDecayAnimationSpec
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import com.demo.jetpackcomposebasic.ui.theme.JetpackComposeBasicTheme
 
@@ -32,11 +38,9 @@ fun Lists() {
     var shouldShowOnBoarding by rememberSaveable { mutableStateOf(true) }
 
     if (shouldShowOnBoarding) {
-        OnBoardingScreen {
-            shouldShowOnBoarding = false
-        }
+        OnBoardingScreen { shouldShowOnBoarding = false }
     } else {
-        ListaVertical()
+        VerticalList()
     }
 }
 
@@ -50,7 +54,9 @@ fun OnBoardingScreen(onBoardingClicked: () -> Unit) {
         ) {
             Text(text = "Welcome to de Basics")
             Button(
-                onClick = {},
+                onClick = {
+                    onBoardingClicked.invoke()
+                },
                 modifier = Modifier.padding(vertical = 24.dp)
             ) {
                 Text(text = "Continue")
@@ -60,31 +66,82 @@ fun OnBoardingScreen(onBoardingClicked: () -> Unit) {
 }
 
 @Composable
-fun ListaVertical(){
-
+fun VerticalList() {
+    LazyColumn(contentPadding = PaddingValues(16.dp)) {
+        item {
+            Text(text = "Mi lista")
+        }
+        items(items = productList) { product ->
+            ProductView(product.name, product.price)
+        }
+    }
 }
 
-data class Producto(val nombre: String, val precio: Double)
+@Composable
+fun ProductView(name: String, price: Double) {
 
-data class Publicidad(val titulo: String)
+    var expanded by remember {
+        mutableStateOf(false)
+    }
 
-private val listaProductos = listOf<Producto>(
-    Producto(nombre = "Manzana", precio = 18.33),
-    Producto(nombre = "Carne", precio = 180.21),
-    Producto(nombre = "Leche", precio = 24.50),
-    Producto(nombre = "Pescado", precio = 75.40),
-    Producto(nombre = "Huevo", precio = 32.99),
-    Producto(nombre = "Cereal", precio = 21.56),
-    Producto(nombre = "Naranja", precio = 2.90),
-    Producto(nombre = "Café", precio = 43.60),
-    Producto(nombre = "Jabón", precio = 10.11)
+    val extrapdding by animateDpAsState(
+        if (expanded) 96.dp else 0.dp,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
+
+    Surface(
+        color = MaterialTheme.colors.primary,
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+    ) {
+        Row(modifier = Modifier.padding(24.dp)) {
+            Column(modifier = Modifier
+                .weight(1f)
+                .padding(bottom = extrapdding.coerceAtLeast(0.dp))) {
+                Text(text = name)
+                Text(text = price.toString())
+            }
+            OutlinedButton(onClick = {
+                expanded = !expanded
+            }) {
+                Text(text = if (expanded) "Show less" else "Show more")
+            }
+        }
+    }
+}
+
+data class Product(val name: String, val price: Double)
+
+data class Publicity(val title: String)
+
+private val productList = listOf<Product>(
+    Product(name = "Manzana", price = 18.33),
+    Product(name = "Carne", price = 180.21),
+    Product(name = "Leche", price = 24.50),
+    Product(name = "Pescado", price = 75.40),
+    Product(name = "Huevo", price = 32.99),
+    Product(name = "Cereal", price = 21.56),
+    Product(name = "Naranja", price = 2.90),
+    Product(name = "Café", price = 43.60),
+    Product(name = "Jabón", price = 10.11),
+    Product(name = "Manzana", price = 18.33),
+    Product(name = "Carne", price = 180.21),
+    Product(name = "Leche", price = 24.50),
+    Product(name = "Pescado", price = 75.40),
+    Product(name = "Huevo", price = 32.99),
+    Product(name = "Cereal", price = 21.56),
+    Product(name = "Naranja", price = 2.90),
+    Product(name = "Café", price = 43.60),
+    Product(name = "Jabón", price = 10.11)
 )
 
-private val listaPublicidad = listOf<Publicidad>(
-    Publicidad("Lista publicitária 1"),
-    Publicidad("Lista publicitária 2"),
-    Publicidad("Lista publicitária 3"),
-    Publicidad("Lista publicitária 4"),
+private val PublicityList = listOf<Publicity>(
+    Publicity("Lista publicitária 1"),
+    Publicity("Lista publicitária 2"),
+    Publicity("Lista publicitária 3"),
+    Publicity("Lista publicitária 4"),
 )
 
 
