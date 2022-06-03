@@ -4,19 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.defaultDecayAnimationSpec
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.coerceAtLeast
@@ -40,7 +38,10 @@ fun Lists() {
     if (shouldShowOnBoarding) {
         OnBoardingScreen { shouldShowOnBoarding = false }
     } else {
-        VerticalList()
+        Column {
+            HorizontalList()
+            VerticalList()
+        }
     }
 }
 
@@ -72,19 +73,31 @@ fun VerticalList() {
             Text(text = "Mi lista")
         }
         items(items = productList) { product ->
-            ProductView(product.name, product.price)
+            ProductViewVertical(product.name, product.price)
         }
     }
 }
 
 @Composable
-fun ProductView(name: String, price: Double) {
+fun HorizontalList() {
+    LazyRow(contentPadding = PaddingValues(16.dp), modifier = Modifier.fillMaxHeight(0.35f)) {
+        item {
+            Text(text = "Mi lista")
+        }
+        items(items = productList) { product ->
+            ProductViewHorizontal(product.name, product.price)
+        }
+    }
+}
+
+@Composable
+fun ProductViewVertical(name: String, price: Double) {
 
     var expanded by remember {
         mutableStateOf(false)
     }
 
-    val extrapdding by animateDpAsState(
+    val extraPadding by animateDpAsState(
         if (expanded) 96.dp else 0.dp,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
@@ -97,9 +110,47 @@ fun ProductView(name: String, price: Double) {
         modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
         Row(modifier = Modifier.padding(24.dp)) {
-            Column(modifier = Modifier
-                .weight(1f)
-                .padding(bottom = extrapdding.coerceAtLeast(0.dp))) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(bottom = extraPadding.coerceAtLeast(0.dp))
+            ) {
+                Text(text = name)
+                Text(text = price.toString())
+            }
+            OutlinedButton(onClick = {
+                expanded = !expanded
+            }) {
+                Text(text = if (expanded) "Show less" else "Show more")
+            }
+        }
+    }
+}
+
+@Composable
+fun ProductViewHorizontal(name: String, price: Double) {
+
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+
+    val extraPadding by animateDpAsState(
+        if (expanded) 96.dp else 0.dp,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
+
+    Surface(
+        color = MaterialTheme.colors.primary,
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+    ) {
+        Column(modifier = Modifier.padding(24.dp)) {
+            Column(
+                modifier = Modifier
+                    .padding(bottom = extraPadding.coerceAtLeast(0.dp))
+            ) {
                 Text(text = name)
                 Text(text = price.toString())
             }
