@@ -1,0 +1,1 @@
+package com.demo.jetpackcomposebasic.navigationsealed class Destination(    val route: String) {    object Screen1 : Destination("screen1")    object Screen2 : Destination("screen2/{newText}") {        fun createRoute(newText : String) = "screen2/$newText"    }}
