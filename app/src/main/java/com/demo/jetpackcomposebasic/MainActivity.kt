@@ -12,8 +12,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
-
+            ScreenOne()
         }
     }
 }
@@ -26,7 +25,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     JetpackComposeBasicTheme {
-
-
+        ScreenOne()
     }
 }
